@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/user")
@@ -31,7 +30,7 @@ public class UserController {
     }
 
     @PostMapping("/createuser")
-    public ResponseEntity<UserEntity> createOrUpdateUser(UserEntity user,HttpServletResponse response)
+    public ResponseEntity<UserEntity> createOrUpdateUser(UserEntity user, HttpServletResponse response)
             throws RecordNotFoundException {
         UserEntity updated = null;
             updated = service.createOrUpdateUser(user);
@@ -45,9 +44,9 @@ public class UserController {
     }
 
     @PutMapping("/updateuser/{id}")
-    public ResponseEntity<UserEntity> retrieveid(@PathVariable long id,UserEntity user) throws RecordNotFoundException {
+    public ResponseEntity<UserEntity> retrieveid(@PathVariable long id, UserEntity user) throws RecordNotFoundException {
         UserEntity updated = null;
-        updated = service.createOrUpdateUser(user);
+        updated = service.updateUser(user);
         return new ResponseEntity<UserEntity>(updated, new HttpHeaders(), HttpStatus.OK);
     }
 

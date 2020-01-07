@@ -1,6 +1,5 @@
 package com.intellect.test.Assignmentdemo.service;
 
-import antlr.StringUtils;
 import com.intellect.test.Assignmentdemo.Util.DateConverterUtil;
 import com.intellect.test.Assignmentdemo.exception.RecordNotFoundException;
 import com.intellect.test.Assignmentdemo.model.UserEntity;
@@ -32,7 +31,6 @@ public class UserService {
     public UserEntity createOrUpdateUser(UserEntity entity) throws RecordNotFoundException
     {
         Optional<UserEntity> userEntity = repository.findByEmail(entity.getEmail());
-        Optional<UserEntity> userEntityId = repository.findById(entity.getId());
         DateConverterUtil util = new DateConverterUtil();
         String date = null;
         try {
@@ -44,16 +42,6 @@ public class UserService {
         {
             throw new RecordNotFoundException("Email Id already exist");
         }
-        else if(userEntityId.isPresent()){
-            UserEntity newEntity = userEntityId.get();
-            if(date != null && date != ""){
-                newEntity.setBirthdate(date);
-            }
-            newEntity.setPincode(entity.getPincode());
-            newEntity = repository.save(newEntity);
-
-            return newEntity;
-        }
         else {
             entity.setEmail(entity.getEmail());
             entity.setFirstName(entity.getFirstName());
@@ -64,6 +52,31 @@ public class UserService {
             }
             entity = repository.save(entity);
 
+            return entity;
+        }
+    }
+
+    public UserEntity updateUser(UserEntity entity) throws RecordNotFoundException
+    {
+        Optional<UserEntity> userEntityId = repository.findById(entity.getId());
+        DateConverterUtil util = new DateConverterUtil();
+        String date = null;
+        try {
+            date = util.convertDateFormat(entity.getBirthdate());
+        } catch (Exception e) {
+            throw new RecordNotFoundException("Enter valid date format");
+        }
+         if(userEntityId.isPresent()){
+            UserEntity newEntity = userEntityId.get();
+            if(date != null && date != ""){
+                newEntity.setBirthdate(date);
+            }
+            newEntity.setPincode(entity.getPincode());
+            newEntity = repository.save(newEntity);
+
+            return newEntity;
+        }
+        else {
             return entity;
         }
     }
